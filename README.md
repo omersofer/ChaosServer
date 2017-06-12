@@ -20,7 +20,7 @@ The "Chaos server" has two interfaces - admin panel & test client, that will be 
 - Open "cmd" shell.
 - Change the current working directory to the project's directory.
 - Running the server: python manage.py runserver
-- In order to set server's "chaos mode", open web browser and go to: 127.0.0.1:8000/admin/
+- In order to set server's "chaos mode", open web browser and go to the admin panel: 127.0.0.1:8000/admin/
 - Here, you will be required to provide Username & Password - use the following:
     Username: admin
     Password: adminadmin
