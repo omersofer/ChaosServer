@@ -31,3 +31,12 @@ The "Chaos server" has two interfaces - admin panel & test client, that will be 
     - Run: python test.py
     - It will probe the server's /response endpoint for 100 times, and will output (to the console) the real percentage of the different http statuses from the server.
 - Enjoy. :)
+
+### Unit Tests
+- The project includes unit tests for the two project's apps: admin_panel, response.
+- In order to run them:
+    - Open "cmd" shell.
+    - Change the current working directory to the project's directory.
+    - Run: python manage.py test admin_panel response
+- admin_panel unit tests: Check that http requests from admin panel change the server's chaos_mode properly.
+- response unit tests: Check that the required percentages of each http response are received in each server's chaos_mode.
