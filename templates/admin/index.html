@@ -1,0 +1,20 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href='{% static "admin/css/dashboard.css" %}' />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+    <input id="normal" type="button" value="normal" onclick="var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'http://127.0.0.1:8000/admin/normal/', true);xmlhttp.send();" />  
+    <input id="degraded" type="button" value="degraded" onclick="var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'http://127.0.0.1:8000/admin/degraded/', true);xmlhttp.send();" />  
+    <input id="failure" type="button" value="failure" onclick="var xmlhttp = new XMLHttpRequest();xmlhttp.open('GET', 'http://127.0.0.1:8000/admin/failure/', true);xmlhttp.send();" />  
+{% endblock %}
+
+
+
+
