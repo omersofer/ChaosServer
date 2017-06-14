@@ -2,19 +2,7 @@
 from __future__ import unicode_literals
 from django.test import TestCase
 from response.models import Mode
-
-# Global variables
-normal200ReqPercent = 100
-normal401ReqPercent = 0
-normal500ReqPercent = 0
-
-degraded200ReqPercent = 50
-degraded401ReqPercent = 25
-degraded500ReqPercent = 25
-
-failure200ReqPercent = 5
-failure401ReqPercent = 0
-failure500ReqPercent = 95
+from Chaos_Server import config
 
 oneSideDelta = 10
 
@@ -23,6 +11,7 @@ def change_chaos_mode(new_mode):
     mode = Mode.objects.get(id=1)
     mode.chaos_mode = new_mode
     mode.save()
+
 
 def probeResponseEndpoint(self, chaos_mode):
     http200Count = 0
@@ -37,17 +26,17 @@ def probeResponseEndpoint(self, chaos_mode):
         if response.status_code == 500:
             http500Count += 1
     # Set required percentages according to chaos_mode
-    mode200ReqPercent = normal200ReqPercent
-    mode401ReqPercent = normal401ReqPercent
-    mode500ReqPercent = normal500ReqPercent
-    if (chaos_mode == 1):  # degraded case
-        mode200ReqPercent = degraded200ReqPercent
-        mode401ReqPercent = degraded401ReqPercent
-        mode500ReqPercent = degraded500ReqPercent
-    elif (chaos_mode == 2):  # failure casse
-        mode200ReqPercent = failure200ReqPercent
-        mode401ReqPercent = failure401ReqPercent
-        mode500ReqPercent = failure500ReqPercent
+    mode200ReqPercent = config.normal200ReqPercent
+    mode401ReqPercent = config.normal401ReqPercent
+    mode500ReqPercent = config.normal500ReqPercent
+    if chaos_mode == config.degradedMode:  # degraded case
+        mode200ReqPercent = config.degraded200ReqPercent
+        mode401ReqPercent = config.degraded401ReqPercent
+        mode500ReqPercent = config.degraded500ReqPercent
+    elif chaos_mode == config.failureMode:  # failure case
+        mode200ReqPercent = config.failure200ReqPercent
+        mode401ReqPercent = config.failure401ReqPercent
+        mode500ReqPercent = config.failure500ReqPercent
     # Check percent of each http response is in a reasonable delta from required percentages
     self.assertTrue((http200Count > (mode200ReqPercent-oneSideDelta)) and (http200Count < (mode200ReqPercent+oneSideDelta)))
     self.assertTrue((http401Count > (mode401ReqPercent-oneSideDelta)) and (http401Count < (mode401ReqPercent+oneSideDelta)))
@@ -61,18 +50,18 @@ class ResponseTestCase(TestCase):
 
     def testNormalModeResponses(self):
         # Set chaos_mode=normal
-        change_chaos_mode(0)
+        change_chaos_mode(config.normalMode)
         # check that get the required responses percentages
-        probeResponseEndpoint(self, 0)
+        probeResponseEndpoint(self, config.normalMode)
 
     def testDegradedModeResponses(self):
         # set chaos_mode=degraded
-        change_chaos_mode(1)
+        change_chaos_mode(config.degradedMode)
         # check that get the required responses percentages
-        probeResponseEndpoint(self, 1)
+        probeResponseEndpoint(self, config.degradedMode)
 
     def testFailureModeResponses(self):
         # set chaos_mode=failure
-        change_chaos_mode(2)
+        change_chaos_mode(config.failureMode)
         # check that get the required responses percentages
-        probeResponseEndpoint(self, 2)
+        probeResponseEndpoint(self, config.failureMode)

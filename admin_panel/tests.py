@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
 from response.models import Mode
+from Chaos_Server import config
 
 
 class AdminPanelTestCase(TestCase):
@@ -21,13 +22,13 @@ class AdminPanelTestCase(TestCase):
     def testChaosModeChanges(self):
         # Test changing chaos_mode to "failure" (admin_panel.views.failure)
         response = self.client.get('/admin/failure/')
-        self.assertEqual(Mode.objects.get(id=1).chaos_mode, 2)
+        self.assertEqual(Mode.objects.get(id=1).chaos_mode, config.failureMode)
         # Test changing chaos_mode to "degraded" (admin_panel.views.degraded)
         response = self.client.get('/admin/degraded/')
-        self.assertEqual(Mode.objects.get(id=1).chaos_mode, 1)
+        self.assertEqual(Mode.objects.get(id=1).chaos_mode, config.degradedMode)
         # Test changing chaos_mode to "normal" (admin_panel.views.normal)
         response = self.client.get('/admin/normal/')
-        self.assertEqual(Mode.objects.get(id=1).chaos_mode, 0)
+        self.assertEqual(Mode.objects.get(id=1).chaos_mode, config.normalMode)
 
 
 

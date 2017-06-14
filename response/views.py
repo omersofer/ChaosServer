@@ -3,19 +3,7 @@ from __future__ import unicode_literals
 from django.http import HttpResponse
 from response.models import Mode
 from random import randint
-
-# Global variables
-normal200ReqPercent = 100
-normal401ReqPercent = 0
-normal500ReqPercent = 0
-
-degraded200ReqPercent = 50
-degraded401ReqPercent = 25
-degraded500ReqPercent = 25
-
-failure200ReqPercent = 5
-failure401ReqPercent = 0
-failure500ReqPercent = 95
+from Chaos_Server import config
 
 
 def index(request):
@@ -23,16 +11,16 @@ def index(request):
     rand = (randint(1,100))
 
     # "normal" mode: 100% of requests will result in 200 http responses
-    if mode.chaos_mode == 0:
+    if mode.chaos_mode == config.normalMode:
         return HttpResponse(status=200)
 
     # "degraded" mode:   50% of requests will result in 200 http responses
     #                    25% of requests will result in 401 http responses
     #                    25% of requests will result in 500 http responses
-    elif mode.chaos_mode == 1:
-        if rand <= degraded200ReqPercent:
+    elif mode.chaos_mode == config.degradedMode:
+        if rand <= config.degraded200ReqPercent:
             return HttpResponse(status=200)
-        elif rand <= (degraded200ReqPercent+degraded401ReqPercent):
+        elif rand <= (config.degraded200ReqPercent+config.degraded401ReqPercent):
             return HttpResponse(status=401)
         else:
             return HttpResponse(status=500)
@@ -40,7 +28,7 @@ def index(request):
     # "failure" mode:    5%  of requests will result in 200 http responses
     #                   95% of requests will result in 500 http responses
     else:
-        if rand <= failure200ReqPercent:
+        if rand <= config.failure200ReqPercent:
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=500)
